@@ -5,7 +5,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.applications.imagenet_utils import decode_predictions
 from keras.metrics import top_k_categorical_accuracy
 
-from read_tar import imagenetData
+from loader import imagenetData
 
 import os
 
