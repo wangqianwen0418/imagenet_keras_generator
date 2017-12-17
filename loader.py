@@ -33,41 +33,6 @@ class imagenetData(object):
             labels = [str(line).split(' ')[1] for line in labels]
             labels = [int(i) for i in labels]
         return labels
-        # tar = tarfile.open(filepath, "r:gz")
-        # for member in tar.getmembers():
-        #     if ("val.txt" in member.name):
-        #         print(member.name)
-        #         f = tar.extractfile(member)
-        #         content = f.read()
-        #         labels = [line for line in content]
-        #         print(len(labels))
-        #         print(labels[1])
-        #         labels = [line.split(b' ')[1] for line in labels]
-        #         labels = labels[:-1] # the last one is ''
-        #         labels = [int(i)-1 for i in labels] # the original labels start from 1
-                
-        #         return labels
-        # tar.close()
-    def get_train_labels(self):
-        filepath = os.path.join(self.dataDir, "assets/ILSVRC2012_devkit_t12.tar.gz")
-        tar = tarfile.open(filepath, "r:gz")
-        label_dict = {}
-        for member in tar.getmembers():
-            if ("meta.mat" in member.name):
-                if not os.path.exists(member.name):
-                    f = tar.extractfile(member)
-                    content = sio.loadmat(f)
-                    sets = content["synsets"]
-                    for k in sets:
-                        id = int(k[0][0][0][0])
-                        wnid = k[0][1][0]
-                        label_dict[wnid] = id
-                # content = f.read()
-                # labels = np.array(content.split(b"\n"))
-                # labels = labels[:50000] # the last one is ''
-                # labels = labels.astype(int)
-                # return labels
-        return label_dict
 
     def get_train_data(self):
         '''
@@ -86,21 +51,6 @@ class imagenetData(object):
                         wnid = img.split("_")[0]
                         # id = label_dict[wnid]
                         labels.append(i)
-        
-        # for member in tar:
-        #     items = tarfile.open(member.name)
-        #     for item in items:
-        #         img = items.getmember(item.name)
-        #         img = items.extractfile(img)
-        #         img = Image.open(img)
-        #         img = img_process(img)
-        #         imgs = add_imgs(img, imgs)
-        #         id = item.name.split("_")[1]
-        #         id = int(id.split(".")[0])
-        #         labels.append(id)
-        # tar.close()
-        # labels =  np.array(labels)
-        # labels = to_onehot(labels) #covert class labels to one hot vectors
         return imgs, np.array(labels)
 
     def get_val_data(self):
@@ -115,21 +65,7 @@ class imagenetData(object):
             for filename in sorted(filenames):
                 imgs.append(os.path.join(dirpath, filename))
         return imgs, labels
-        # for subdir,
-        # tar = tarfile.open(filepath, "r")
-        # imgs = np.array([])
-        # labels = val_labels()
-        # labels = to_onehot(labels)
-        # set_size = 50000
-        # for i in range(set_size):
-        #     img_name = "ILSVRC2012_val_000{:05d}.JPEG".format(i+1)
-        #     img = tar.getmember(img_name)
-        #     img = tar.extractfile(img)
-        #     img = Image.open(img)
-        #     img = img_process(img)
-        #     imgs = add_imgs(img, imgs)
-        # tar.close()
-        # return imgs, labels
+    
     def _shuffle_roidb_idx(self):
         """Randomly permute the training roidb."""
         self.perm = np.random.permutation(np.arange(self.num_images))
@@ -160,13 +96,6 @@ class imagenetData(object):
             x, y = self._get_next_minibatch()
             print(self.cur)
             yield (x, y)
-
-    # def add_imgs(img, imgs):  
-    #     if(len(imgs)==0):
-    #         imgs = img
-    #     else:
-    #         imgs = np.append(imgs, img, axis=0)
-    #     return imgs
 
     def img_process(self, img, s1= 256, s2= 480, interpolation="bilinear"):
         '''
